@@ -79,7 +79,63 @@ int main() {
 
     if (input >= -100000 && input <= 100000) {
 
-       // 待完成 
+        while (input >= 1) {
+
+            int ten = 1;
+            int num = 0;
+            int tmp = 0;
+            while (1) {
+                num = tmp; // 5
+                tmp = input / ten; // 5000 5
+                if (tmp >= 1)
+                    ten *= 10; // 10 100  1000
+                else
+                    break;
+            }
+
+            //printf("%d ", num);
+
+            if (num == 0)
+                printf("aling");
+            else if(num == 1)
+                printf("yi");
+            else if (num == 2)
+                printf("er");
+            else if (num == 3)
+                printf("san");
+            else if (num == 4)
+                printf("si");
+            else if (num == 5)
+                printf("wu");
+            else if (num == 6)
+                printf("liu");
+            else if (num == 7)
+                printf("qi");
+            else if (num == 8)
+                printf("ba");
+            else
+                printf("jiu");
+
+            if (input >= 1)
+                printf(" ");
+
+            input = input - num * ten / 10;
+
+
+            if (input == 0) {
+                if (num * ten / 10 >= 10) {
+                    ten /= 10;
+                    while (ten >= 10) {
+                        ten /= 10;
+                        printf("ling");
+
+                        if (ten >= 10)
+                            printf(" ");
+                    }
+                } 
+            }
+        }
+
     }
 
     return 0;
