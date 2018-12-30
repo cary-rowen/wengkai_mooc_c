@@ -21,12 +21,15 @@ int main() {
             for (int j = 0; j < n; j++)
                 matrix[i][j] = 0;
 
+        getchar();
         for (int i = 0; i < n; i++) {
-            getchar();
+            int is_end_of_line = 0;
+            int last_is_num = 0;
             for (int j = 0; j < n; j++) {
                 char c = getchar();
 
             }
+
         }
 
         printf("\n==========\n");
