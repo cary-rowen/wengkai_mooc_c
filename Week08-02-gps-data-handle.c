@@ -108,34 +108,41 @@
                 时间限制：500ms内存限制：32000kb
 ================================================================*/
 #include <stdio.h>
+#include <string.h>
 
-int hex_to_dec(int hex_num);
-void print_utc_time(char time[]);
+/**
+ *
+ * 从十六进制字符串读取每个字符并转为十进制整数
+ */
+int hex_to_dec(char hex[]) {
+
+    if (strlen(hex) == 0)
+        return 0;
+
+    int result = 0;
+    int c;
+
+    for (unsigned long int i = 0; i < strlen(hex); i ++) {
+        c = hex[i];
+        if (c >= 'a' && c <= 'f')
+            result = 16 * result + c - 'a' + 10;
+        
+        if (c >= 'A' && c <= 'F') {
+            result = 16 * result + c - 'A' + 10;
+        }
+    }
+
+    return result;
+}
 
 int main() {
+
+    int c;
+
+    while ((c = getchar()) != EOF) {
+
+    }
+
     return 0;
 }
 
-
-// 十六进制转十进制
-int hex_to_dec(int hex_num) {
-    int num = 0, res = 0,cnt = 0;
-    while (hex_num > 0) {
-        num = hex_num % 10;
-        int minus = cnt;
-        int sixteen = 1;
-        if (!minus) {
-            res = num;
-        } else {
-            while (minus > 0) {
-                sixteen *= 16;
-                minus --;
-            }
-            res = res + num * sixteen;
-        }
-
-        hex_num = hex_num / 10;
-        cnt ++;
-    }
-    return res;
-}
