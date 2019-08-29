@@ -112,6 +112,7 @@
                 $GPRMC,112813.040,A,3158.4621,N,11848.3737,E,10.05,324.27,150706,,,A*8F
                 $GPRMC,115013.640,A,3158.4088,N,11848.3737,E,10.05,324.27,150706,,,A*6b
                 $ACOMC,102033.640,A,3950.4888,N,11848.3787,E,10.05,324.27,150706,,,A*5A
+                $GPRMC"121825.040,A,3158.4622,N,10048.3237,E,10.05,324.27,150706,,,A*5D
 
                 
                 输出样例：
@@ -121,6 +122,7 @@
                 时间限制：500ms内存限制：32000kb
 ================================================================*/
 #include <stdio.h>
+#include <ctype.h>
 #include <sys/time.h>
 #include <sys/resource.h>
 #include <unistd.h>
@@ -168,13 +170,15 @@ int main() {
 
     int c = '\0', valid_hex = 0, xor_valid = 0;
     unsigned int comma = 0;
-    char temp_time[7], utc_time[7];
-    unsigned char is_location = 0, is_gprmc = 0;
+    char temp_time[7] = "\0", utc_time[7] = "\0";
+    unsigned char is_location = 0, is_gprmc = 0, is_beginning = 1;
 
     c = getchar();
     while (c != EOF) {
-        if (c == '\n') {
-            c = getchar();
+        
+        if (is_beginning) {
+            while (isspace('c')) 
+                c = getchar();
             if (c == 'E') {
                 c = getchar();
                 if (c == 'N') {
@@ -183,7 +187,23 @@ int main() {
                         break;
                     }
                 }
-            } 
+            }
+        }
+
+
+        if (c == '\n') {
+            do {
+                c = getchar();
+            } while (isspace(c));
+            if (c == 'E') {
+                c = getchar();
+                if (c == 'N') {
+                    c = getchar();
+                    if (c == 'D') {
+                        break;
+                    }
+                }
+            }
             valid_hex = 0;
             comma = 0;
             xor_valid = 0;
@@ -192,6 +212,7 @@ int main() {
         }
 
         if (c == '$') {
+            is_beginning = 0;
             c = getchar();
             xor_valid ^= c; 
             // GPRMC
@@ -215,6 +236,8 @@ int main() {
                 }
             }
             c = getchar();
+            if (c != ',')
+                is_gprmc = 0; 
             continue;
         }
 
@@ -276,8 +299,12 @@ int main() {
         c = getchar();
     }
 
-    utc_to_cntime(utc_time);
-    printf("%s\n", utc_time);
+    if (utc_time[0] == '\0')
+        printf("00:00:00\n");
+    else {
+        utc_to_cntime(utc_time);
+        printf("%s\n", utc_time);
+    }
 
     getrusage(RUSAGE_SELF, &usage);
     end = usage.ru_utime;
