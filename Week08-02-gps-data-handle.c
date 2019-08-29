@@ -105,7 +105,6 @@
                 $GPRMC,094813.650,A,3151.4808,N,11848.3737,E,10.05,324.27,150706,,,A*5D
                 $GPRMC,124813.680,A,3158.1608,N,11848.3737,E,10.05,324.27,150706,,,A*58
                 $GPRMC,104813.040,A,3158.4621,N,11848.3737,E,10.05,324.27,150706,,,A*5E
-                $GPRMC,234813.640,A,3158.4088,N,11848.3737,E,10.05,324.27,150706,,,A*5D
 
                 校验失败：
                 $GPRMC,134813.680,A,3158.1608,N,11841.3737,E,10.05,324.27,150706,,,A*1A
@@ -289,7 +288,7 @@ int main() {
             //printf("%d\n", valid_hex);
             //printf("%d\n", xor_valid % 65536);
             //break;
-            if (valid_hex == xor_valid && is_location && is_gprmc) {
+            if (valid_hex == (xor_valid % 65536) && is_location && is_gprmc) {
                 int i = 0;
                 for ( ; i < 6; i ++)
                     utc_time[i] = temp_time[i];
