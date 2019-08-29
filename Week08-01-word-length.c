@@ -38,18 +38,32 @@ It's great to see you here.
 时间限制：500ms内存限制：32000kb
 ================================================================*/
 #include <stdio.h>
-#include <ctype.h>
 
 int main() {
 
 
     int c, word_length = 0;
     unsigned char is_word = 0, is_first = 1;;
+
+    c = getchar();
+
+    if (c == '\n') {
+        printf("0");
+        return 0;
+    }
+
+    while (c == ' ') {
+        c = getchar();
+    }
+    
+    if (c == '\n') {
+        printf("0");
+        return 0;
+    }
     // It's great to see you here.
     // Hello, world.
     // Hello.
-    while ((c = getchar()) != EOF) {
-
+    do {
         if (c == '.') {
             if (is_first) {
                 printf("%d", word_length);
@@ -60,7 +74,7 @@ int main() {
             break;
         }
 
-        if (isspace(c)) {
+        if (c == ' ') {
             if (is_word) {
                 if (is_first)
                     printf("%d", word_length);
@@ -70,12 +84,13 @@ int main() {
                 is_first = 0;
                 word_length = 0;
             }
+
             continue;
         }
 
         word_length ++;
         is_word = 1;
-    }
+    } while ((c = getchar()) != EOF);
 
     return 0;
 }
