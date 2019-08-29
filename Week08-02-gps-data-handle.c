@@ -162,11 +162,15 @@ int main() {
 
     //return 0;
 
+
+    // 以下代码用于测试程序的执行时间
+    // 并与题目答案无关
     struct rusage usage;
     struct timeval start, end;
 
     getrusage(RUSAGE_SELF, &usage);
     start = usage.ru_utime;
+    // END
 
     int c = '\0', valid_hex = 0, xor_valid = 0;
     unsigned int comma = 0;
@@ -299,18 +303,22 @@ int main() {
         c = getchar();
     }
 
+    // 可能在评分系统中，输出的结尾没有换行符
     if (utc_time[0] == '\0')
         printf("00:00:00\n");
     else {
         utc_to_cntime(utc_time);
-        printf("%s\n", utc_time);
+        printf("%c%c:%c%c:%c%c\n", utc_time[0], utc_time[1], utc_time[2], utc_time[3], utc_time[4], utc_time[5]);
     }
 
+    // 以下代码用于测试程序的执行时间
+    // 并与题目答案无关
     getrusage(RUSAGE_SELF, &usage);
     end = usage.ru_utime;
 
     printf("Started at: %ld.%lds\n", start.tv_sec, start.tv_usec);
     printf("Ended at: %ld.%lds\n", end.tv_sec, end.tv_usec);
+    // END
 
     return 0;
 }
