@@ -48,7 +48,7 @@ int main() {
     c = getchar();
 
     if (c == '\n') {
-        printf("0");
+        //printf("0");
         return 0;
     }
 
@@ -57,7 +57,7 @@ int main() {
     }
     
     if (c == '\n') {
-        printf("0");
+        //printf("0");
         return 0;
     }
     // It's great to see you here.
