@@ -99,7 +99,20 @@
                 
                 END
                 
-                
+                我的样例：
+                校验正确：
+                $GPRMC,224813.620,A,3158.8108,N,11848.3737,E,10.05,324.27,150706,,,A*5F
+                $GPRMC,094813.650,A,3151.4808,N,11848.3737,E,10.05,324.27,150706,,,A*5D
+                $GPRMC,124813.680,A,3158.1608,N,11848.3737,E,10.05,324.27,150706,,,A*58
+                $GPRMC,104813.040,A,3158.4621,N,11848.3737,E,10.05,324.27,150706,,,A*5E
+                $GPRMC,234813.640,A,3158.4088,N,11848.3737,E,10.05,324.27,150706,,,A*5D
+
+                校验失败：
+                $GPRMC,134813.680,A,3158.1608,N,11841.3737,E,10.05,324.27,150706,,,A*1A
+                $GPRMC,112813.040,A,3158.4621,N,11848.3737,E,10.05,324.27,150706,,,A*8F
+                $GPRMC,115013.640,A,3158.4088,N,11848.3737,E,10.05,324.27,150706,,,A*6b
+                $ACOMC,102033.640,A,3950.4888,N,11848.3787,E,10.05,324.27,150706,,,A*5A
+
                 
                 输出样例：
                 
@@ -108,40 +121,154 @@
                 时间限制：500ms内存限制：32000kb
 ================================================================*/
 #include <stdio.h>
-#include <string.h>
 
-/**
- *
- * 从十六进制字符串读取每个字符并转为十进制整数
- */
-int hex_to_dec(char hex[]) {
-
-    if (strlen(hex) == 0)
-        return 0;
-
-    int result = 0;
-    int c;
-
-    for (unsigned long int i = 0; i < strlen(hex); i ++) {
-        c = hex[i];
-        if (c >= 'a' && c <= 'f')
-            result = 16 * result + c - 'a' + 10;
-        
-        if (c >= 'A' && c <= 'F') {
-            result = 16 * result + c - 'A' + 10;
+void utc_to_cntime(char* utc_time) {
+    if (utc_time[0] == '1') {
+        if (utc_time[1] >= '6') {
+            utc_time[0] = '0';
+            utc_time[1] = utc_time[1] - '0' + 8 - 14 + '0';
+        } else if (utc_time[1] >= '2') {
+            utc_time[0] = '2';
+            utc_time[1] = utc_time[1] - '0' + 8 - 10 + '0';
+        } else {
+            utc_time[1] = utc_time[1] - '0' + 8 + '0';
         }
-    }
+    } else if (utc_time[0] == '0') {
+        if (utc_time[1] >= '2') {
+            utc_time[0] = '1';
+            utc_time[1] = utc_time[1] - '0' + 8 - 10 + '0';
+        } else {
+            utc_time[1] = utc_time[1] - '0' + 8 + '0';
+        }
+    } else if (utc_time[0] == '2') {
+        utc_time[0] = '0';
+        utc_time[1] = 8 - (24 - (20 + (utc_time[1] - '0'))) + '0';
 
-    return result;
+    }
 }
+
 
 int main() {
 
-    int c;
+    //char utc_time2[] = "100201";
+    //printf("%s\n", utc_time2);
+    //utc_to_cntime(utc_time2);
+    //printf("%s\n", utc_time2);
 
-    while ((c = getchar()) != EOF) {
+    //return 0;
 
+    int c = '\0', valid_hex = 0, xor_valid = 0;
+    unsigned int comma = 0;
+    char temp_time[7], utc_time[7];
+    unsigned char is_location = 0, is_gprmc = 0;
+
+    c = getchar();
+    while (c != EOF) {
+        if (c == '\n') {
+            c = getchar();
+            if (c == 'E') {
+                c = getchar();
+                if (c == 'N') {
+                    c = getchar();
+                    if (c == 'D') {
+                        break;
+                    }
+                }
+            } 
+            valid_hex = 0;
+            comma = 0;
+            xor_valid = 0;
+            is_location = 0;
+            is_gprmc = 0;
+        }
+
+        if (c == '$') {
+            c = getchar();
+            xor_valid ^= c; 
+            // GPRMC
+            if (c == 'G') {
+                c = getchar();
+                xor_valid ^= c; 
+                if (c == 'P') {
+                    c = getchar();
+                    xor_valid ^= c; 
+                    if (c == 'R') {
+                        c = getchar();
+                        xor_valid ^= c; 
+                        if (c == 'M') {
+                            c = getchar();
+                            xor_valid ^= c; 
+                            if (c == 'C') {
+                                is_gprmc = 1;
+                            }
+                        }
+                    }
+                }
+            }
+            c = getchar();
+            continue;
+        }
+
+
+        if (c == ',') {
+            comma ++;
+
+            xor_valid ^= c;
+
+            if (comma == 1) {
+                int i = 0;
+                while (i <= 5) {
+                    c = getchar();
+                    //printf("%c\n", c);
+                    xor_valid ^= c;
+                    temp_time[i++] = c;
+                }
+
+                temp_time[i] = '\0';
+            }
+
+            if (comma == 2) {
+                c = getchar();
+                xor_valid ^= c;
+                if (c == 'A')
+                    is_location = 1;
+            }
+            c = getchar();
+            continue;
+        }
+
+        if (c == '*') {
+            c = getchar();
+            while (c != '\n') {
+                if (c >= 'a' && c <= 'f')
+                    valid_hex = 16 * valid_hex + c - 'a' + 10;
+                else if (c >= 'A' && c <= 'F')
+                    valid_hex = 16 * valid_hex + c - 'A' + 10;
+                else if (c >= '0' && c <= '9')
+                    valid_hex = 16 * valid_hex + c - '0';
+                
+                c = getchar();
+            }
+
+            //printf("%d\n", valid_hex);
+            //printf("%d\n", xor_valid % 65536);
+            //break;
+            if (valid_hex == xor_valid && is_location && is_gprmc) {
+                int i = 0;
+                for ( ; i < 6; i ++)
+                    utc_time[i] = temp_time[i];
+                utc_time[i] = '\0';
+            }
+            continue;
+        }
+
+        xor_valid ^= c;
+
+        c = getchar();
     }
+
+    utc_to_cntime(utc_time);
+    printf("%s\n", utc_time);
 
     return 0;
 }
