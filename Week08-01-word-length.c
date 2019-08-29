@@ -45,25 +45,10 @@ int main() {
     int c, word_length = 0;
     unsigned char is_word = 0, is_first = 1;;
 
-    c = getchar();
-
-    if (c == '\n') {
-        //printf("0");
-        return 0;
-    }
-
-    while (c == ' ') {
-        c = getchar();
-    }
-    
-    if (c == '\n') {
-        //printf("0");
-        return 0;
-    }
     // It's great to see you here.
     // Hello, world.
     // Hello.
-    do {
+    while ((c = getchar()) != EOF) {
         if (c == '.') {
             if (is_first) {
                 printf("%d", word_length);
@@ -88,9 +73,13 @@ int main() {
             continue;
         }
 
+        // 防止空行被计入单词长度
+        if (c == '\n')
+            continue;
+
         word_length ++;
         is_word = 1;
-    } while ((c = getchar()) != EOF);
+    }
 
     return 0;
 }
