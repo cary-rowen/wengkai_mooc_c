@@ -121,6 +121,9 @@
                 时间限制：500ms内存限制：32000kb
 ================================================================*/
 #include <stdio.h>
+#include <sys/time.h>
+#include <sys/resource.h>
+#include <unistd.h>
 
 void utc_to_cntime(char* utc_time) {
     if (utc_time[0] == '1') {
@@ -156,6 +159,12 @@ int main() {
     //printf("%s\n", utc_time2);
 
     //return 0;
+
+    struct rusage usage;
+    struct timeval start, end;
+
+    getrusage(RUSAGE_SELF, &usage);
+    start = usage.ru_utime;
 
     int c = '\0', valid_hex = 0, xor_valid = 0;
     unsigned int comma = 0;
@@ -269,6 +278,12 @@ int main() {
 
     utc_to_cntime(utc_time);
     printf("%s\n", utc_time);
+
+    getrusage(RUSAGE_SELF, &usage);
+    end = usage.ru_utime;
+
+    printf("Started at: %ld.%lds\n", start.tv_sec, start.tv_usec);
+    printf("Ended at: %ld.%lds\n", end.tv_sec, end.tv_usec);
 
     return 0;
 }
