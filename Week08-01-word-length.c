@@ -50,11 +50,12 @@ int main() {
     // Hello.
     while ((c = getchar()) != EOF) {
         if (c == '.') {
-            if (is_first) {
+            if (is_first && !is_word) {
+                break;
+            } else if (is_first) {
                 printf("%d", word_length);
                 is_first = 0;
-            }
-            else if (is_word)
+            } else if (is_word)
                 printf(" %d", word_length);
             break;
         }
@@ -78,7 +79,8 @@ int main() {
             continue;
 
         word_length ++;
-        is_word = 1;
+        if (c != '\n')
+            is_word = 1;
     }
 
     return 0;
