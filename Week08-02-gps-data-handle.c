@@ -303,10 +303,10 @@ int main() {
     }
 
     // 可能在评分系统中，输出的结尾没有换行符
-    if (utc_time[0] == '\0')
-        //printf("00:00:00\n");
+    if (utc_time[0] == '\0') {
+        printf("00:00:00\n");
         return 0;
-    else {
+    }else {
         utc_to_cntime(utc_time);
         printf("%c%c:%c%c:%c%c\n", utc_time[0], utc_time[1], utc_time[2], utc_time[3], utc_time[4], utc_time[5]);
     }
