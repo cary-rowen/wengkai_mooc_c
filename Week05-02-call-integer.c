@@ -76,8 +76,19 @@ int main() {
     
     int input;
     scanf("%d", &input);
+    unsigned char is_first = 1;
 
     if (input >= -100000 && input <= 100000) {
+
+        if (!input) {
+            printf("ling");
+            return 0;
+        }
+
+        if (input < 0) {
+            printf("fu ");
+            input = -1 * input;
+        }
 
         while (input >= 1) {
 
@@ -85,18 +96,22 @@ int main() {
             int num = 0;
             int tmp = 0;
             while (1) {
-                num = tmp; // 5
-                tmp = input / ten; // 5000 5
+                num = tmp; // 0 30 3
+                tmp = input / ten; // 30 3 0
                 if (tmp >= 1)
-                    ten *= 10; // 10 100  1000
+                    ten *= 10; // 10 100
                 else
                     break;
             }
 
+
+            if (!is_first)
+                printf(" ");
+
             //printf("%d ", num);
 
             if (num == 0)
-                printf("aling");
+                printf("ling");
             else if(num == 1)
                 printf("yi");
             else if (num == 2)
@@ -116,9 +131,6 @@ int main() {
             else
                 printf("jiu");
 
-            if (input >= 1)
-                printf(" ");
-
             input = input - num * ten / 10;
 
 
@@ -126,14 +138,14 @@ int main() {
                 if (num * ten / 10 >= 10) {
                     ten /= 10;
                     while (ten >= 10) {
+                        printf(" ");
                         ten /= 10;
                         printf("ling");
-
-                        if (ten >= 10)
-                            printf(" ");
                     }
                 } 
             }
+
+            is_first = 0;
         }
 
     }
