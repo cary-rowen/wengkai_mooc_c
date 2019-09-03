@@ -169,7 +169,11 @@ void make_mutinomial(int arr[][2], int length) {
 
         is_first = 0;
 
-        printf("%d", second_sum);
+        if (second_sum != -1)
+            printf("%d", second_sum);
+        else
+            printf("-");
+
         if (!current && prev) {
             if (prev == 1)
                 printf("x");
