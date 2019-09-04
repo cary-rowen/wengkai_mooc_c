@@ -72,13 +72,12 @@
 
 #define MAX_POWER 100
 
-void sort(int[][2], int);
 void swap_elem(int*, int*);
-void make_mutinomial(int[][2], int);
+void make_mutinomial(int[], int);
 
-void print_array(int arr[][2], int length) {
+void print_array(int arr[], int length) {
     for (int i = 0;i < length; i ++) {
-        printf("Pri: %d %d\n", arr[i][0], arr[i][1]);
+        printf("Pri: %d %d\n", i, arr[i]);
     }
 }
 
@@ -88,141 +87,104 @@ int main() {
 
     // 从 0 到 100，所以要加上 1
     // 又，有两个多项式，所以 x2
-    int elements[2 * (MAX_POWER + 1)][2];
-    int elem_length = 2 * (MAX_POWER + 1);
+    int elem_length = MAX_POWER + 1;
+    int elements[elem_length];
 
-    for (int i = 0; i < 2 * (MAX_POWER + 1); i ++) {
-        elements[i][0] = 0;
-        elements[i][1] = 0;
+    // 将数组元素全部置为 0
+    for (int i = 0; i < elem_length; i ++){
+        elements[i] = 0;
     }
 
-
-    int line_count = 0;
-    // 其实这个值已经超出一个多项式的范围
-    int top_index = MAX_POWER + 1;
-    while (line_count < top_index && scanf("%d %d", &power, &coefficient) == 2) {
-        //printf("%d %d\n", power, coefficient);
-        if (power <= MAX_POWER) {
-            elements[line_count][0] = power;
-            elements[line_count][1] = coefficient;
+    for (int i = 0; i < elem_length && scanf("%d %d", &power, &coefficient); i++) {
+        if (power <= MAX_POWER && power >= 0 ) {
+            // 因为数组元素全是 0
+            if (!elements[power])
+                elements[power] = coefficient;
+            else
+                elements[power] = elements[power] + coefficient;
         }
 
-        line_count ++;
-
-        if (power == 0) {
+        if (power == 0)
             break;
-        }
     }
 
-    while (line_count < elem_length && scanf("%d %d", &power, &coefficient) == 2) {
-        //printf("%d %d\n", power, coefficient);
-        if (power <= MAX_POWER) {
-            elements[line_count][0] = power;
-            elements[line_count][1] = coefficient;
+    for (int i = 0; i < elem_length && scanf("%d %d", &power, &coefficient); i++) {
+        if (power <= MAX_POWER && power >= 0 ) {
+            if (!elements[power])
+                elements[power] = coefficient;
+            else
+                elements[power] = elements[power] + coefficient;
         }
 
-        if (power == 0) {
+        if (power == 0)
             break;
-        }
-
-        line_count ++;
     }
 
     //print_array(elements, elem_length);
 
-    // 对二维数组进行排序
-    sort(elements, elem_length);
-    //printf("\n==========================\n");
-    //print_array(elements, elem_length);
-    //printf("\n++++++++++++++++++++++++++\n");
+    //printf("\n4x6+6x5+12x3+12x2+12x+40\n");
     make_mutinomial(elements, elem_length);
 
     return 0;
 }
 
-void make_mutinomial(int arr[][2], int length) {
+void make_mutinomial(int arr[], int length) {
 
-    int current = 0, prev = 0;
-    int second_sum = 0;
-    int is_first = 1;
-    for (int i = 1; i < length; i++) {
-        current = arr[i][0];
-        prev = arr[i - 1][0];
+    int temp;
+    unsigned char flag = 0;
+    for (int i = length - 1; i >= 0; i --) {
+        temp = arr[i];
 
-        if (current == prev) {
-            second_sum = arr[i][1] + arr[i - 1][1];
-            i ++;
-        } else {
-            second_sum = arr[i - 1][1];
-        }
-
-        if (!second_sum) {
-            if (!current && !prev && is_first) {
-                printf("0");
-                break;
-            }
-            continue;
-        }
-
-        if (second_sum > 0 && i - 1 != 1 && !is_first)
-            printf("+");
-
-        is_first = 0;
-
-        if (second_sum != -1)
-            printf("%d", second_sum);
-        else
+        if (temp == -1) {
+            flag = 1;
             printf("-");
-
-        if (!current && prev) {
-            if (prev == 1)
+            if (i == 0) {
+                printf("%d", abs(temp));
+            } else if (i == 1) {
                 printf("x");
-            else
-                printf("x%d", prev);
-
-            continue;
+            } else {
+                printf("x%d", i);
+            }
+        } else if (temp < -1) {
+            flag = 1;
+            printf("-");
+            if (i == 0) {
+                printf("%d", abs(temp));
+            } else if (i == 1) {
+                printf("%dx", abs(temp));
+            } else {
+                printf("%dx%d", abs(temp), i);
+            }
+        } else if (temp == 1) {
+            if (flag)
+                printf("+");
+            flag = 1;
+            if (i == 0) {
+                printf("%d", temp);
+            } else if (i == 1) {
+                printf("x");
+            } else 
+                printf("x%d",i);
+        } else if (temp == 0 && i == 0) {
+            if (!flag)
+                printf("0");
+        } 
+        else if (temp > 0) {
+            if (flag)
+                printf("+");
+            flag = 1;
+            if (i == 0) {
+                printf("%d", temp);
+            } else if (i == 1) {
+                printf("%dx", temp);
+            } else {
+                printf("%dx%d", temp, i);
+            }
         }
 
-        if (current) {
-            printf("x");
-            if (current != prev) {
-                if (prev != 1)
-                    printf("%d", prev);
-            } else if (current != 1)
-                    printf("%d", current);
-
-        }
 
     }
 
     // 在线判题系统可能不要空格
-    //printf("\n");
-}
-
-void sort(int arr[][2], int length) {
-    // 运用插入法进行二维数组的排序
-
-    int index;
-    for (int i = 0; i < length - 1; i++) {
-        for (int j = i + 1; j > 0; j --) {
-            index = j - 1;
-            if (arr[j][0] > arr[index][0]) {
-                swap_elem(&arr[j][0], &arr[index][0]);
-                swap_elem(&arr[j][1], &arr[index][1]);
-            } else if (arr[j][0] == arr[index][0]) {
-                if (abs(arr[j][1]) > abs(arr[index][1])) {
-                    swap_elem(&arr[j][0], &arr[index][0]);
-                    swap_elem(&arr[j][1], &arr[index][1]);
-                }
-            }  else
-                break;
-        }
-    }
-}
-
-void swap_elem(int *elem1, int *elem2) {
-    int temp;
-    temp = *elem1;
-    *elem1 = *elem2;
-    *elem2 = temp;
+    printf("\n");
 }
