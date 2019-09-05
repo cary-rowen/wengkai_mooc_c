@@ -2,3 +2,5 @@
 test*
 *.java
 *.class
+cscope*
+tags*
