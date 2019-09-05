@@ -48,8 +48,129 @@
             输出样例：
             
             2 1
+
+
+            我的样例：
+            1 7 4 11
+            4 8 3 60
+            1 9 1 8
+            0 7 8 29
+            输出：
+            NO
+
+            1 7 4 11
+            4 8 3 60
+            1 9 1 10
+            0 7 8 29
+            输出：
+            2 3
+
+            1 8 3
+            4 7 6
+            9 9 0
+            输出：
+            1 1
+
+            0 0 0 0
+            0 0 0 0
+            0 0 0 0
+            0 0 0 0
+
             
             时间限制：500ms内存限制：32000kb
 ================================================================*/
+#include <stdio.h>
+
+void find_point(int *, int);
+
+int main() {
+
+    int n;
+    scanf("%d", &n);
+
+    if (n >= 1 && n <= 100) {
+        int matrix[n][n];
+
+        for (int i = 0; i < n; i ++) {
+            for (int j = 0; j < n; j ++) {
+                scanf("%d", &matrix[i][j]);
+            }
+        }
+
+        printf("\n=====================\n");
+        for (int i = 0; i < n; i ++) {
+            for (int j = 0; j < n; j ++) {
+                printf("%d%c", matrix[i][j], (j == n - 1) ? '\n' : ' ');
+            }
+        }
+        printf("\n=====================\n");
+
+        
+        int max_row, max_col, min_row, min_col;
+        char flag = 1, find = 0;
+        int max[n][2], min[n][2];
+        for (int i = 0; i < n; i ++) {
+            flag = 1;
+            for (int j = 0;j < n; j ++) {
+                if (flag) {
+                    max_row = i;
+                    max_col = j;
+                    flag = 0;
+                    continue;
+                }
+
+                // 比上一行大时，重设游标
+                if (matrix[i][j] > matrix[max_row][max_col]) {
+                    max_row = i;
+                    max_col = j;
+                    //printf("row: %d col: %d\n", max_row, max_col);
+                    //printf("i: %d j: %d\n", i, j);
+                }
+            }
+            max[i][0] = max_row;
+            max[i][1] = max_col;
+
+            //printf("Max: %d MaxRow: %d MaxCol: %d\n", matrix[max_row][max_col],max_row, max_col);
+
+            flag = 1;
+            for (int k = 0; k < n; k ++) {
+                if (flag) {
+                    min_row = k;
+                    min_col = i;
+                    flag = 0;
+                    continue;
+                }
+
+                if (matrix[k][i] < matrix[min_row][min_col]) {
+                    min_row = k;
+                    min_col = i;
+                }
+            }
+            min[i][0] = min_row;
+            min[i][1] = min_col;
+            //printf("Min: %d MinRow: %d MinCol: %d\n", matrix[min_row][min_col],min_row, min_col);
+        }
+
+        //printf("\n%d %d %d %d %d %d\n", row, col, max_row, max_col,min_row, min_col);
+     
+        for (int i = 0; i < n; i ++) {
+            for (int j = 0; j < n; j ++) {
+                if (min[j][0] == max[i][0] && min[j][1] == max[i][1] && matrix[min[j][0]][max[i][1]] == matrix[max[i][0]][min[j][1]]) {
+                    printf("%d %d\n", min[j][0], min[j][1]);
+                    find = 1;
+                    break;
+                }
+            }
+        }
+
+        if (!find)
+            printf("NO");
+
+        // OJ 判题时可能不能用换行符
+        // 注释掉即可
+        printf("\n");
+    }
 
 
+    return 0;
+}
