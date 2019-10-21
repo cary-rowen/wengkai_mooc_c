@@ -76,7 +76,7 @@ int main() {
         }
     
         //printf("%d", binary);
-        int result = 0, cnt = 0, current = 0, ten = 1;
+        int result = 0, cnt = 0, current = 0;
 
         while (binary >= 1) {
             current = binary % 10;

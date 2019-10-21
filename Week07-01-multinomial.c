@@ -72,7 +72,6 @@
 
 #define MAX_POWER 100
 
-void swap_elem(int*, int*);
 void make_mutinomial(int[], int);
 
 void print_array(int arr[], int length) {
